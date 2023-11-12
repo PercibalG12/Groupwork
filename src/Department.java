@@ -1,30 +1,36 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-public class Department{
+
+public class Department {
     private String departmentCode;
     private String departmentName;
     private double regularRate;
     private double overtimeRate;
 
-    // Default Constructor
-    public Department() {
-        this("", "", 0.0, 0.0);
+
+    //Constructor
+    //Default Constructor
+    Department(){
+        this("","",0.0,0.0);
     }
 
-    // Primary Constructor
-    public Department(String departmentCode, String departmentName, double regularRate, double overtimeRate) {
-        this.setDepartmentCode(departmentCode);
-        this.setDepartmentName(departmentName);
-        this.setRegularRate(regularRate);
-        this.setOvertimeRate(overtimeRate);
+    //Primary Constructor
+    Department(String departmentCode, String departmentName, double regularRate, double overtimeRate){
+        this.departmentCode = departmentCode;
+        this.departmentName = departmentName;
+        this.regularRate = regularRate;
+        this.overtimeRate = overtimeRate;
     }
 
-    // Copy Constructor
-    public Department(Department obj) {
-        this(obj.getDepartmentCode(), obj.getDepartmentName(), obj.getRegularRate(), obj.getOvertimeRate());
+    //Copy Constructor
+    Department(Department obj){
+        this(obj.departmentCode, obj.departmentName, obj.regularRate,obj.overtimeRate);
     }
 
-    // Getters
+    //Getters
     public String getDepartmentCode() {
         return departmentCode;
     }
@@ -41,7 +47,7 @@ public class Department{
         return overtimeRate;
     }
 
-    // Setters
+    //Setters
     public void setDepartmentCode(String departmentCode) {
         this.departmentCode = departmentCode;
     }
@@ -58,220 +64,200 @@ public class Department{
         this.overtimeRate = overtimeRate;
     }
 
-    // Override the toString method
-    @Override
-    public String toString() {
-        return "+----------------------+----------------------+-----------------+------------------+\n" +
-                "| Department Code      | Department Name      | Regular Rate    | Overtime Rate    |\n" +
-                "+----------------------+----------------------+-----------------+------------------+\n" +
-                String.format("| %-20s | %-20s | %-15.2f | %-15.2f |\n", departmentCode, departmentName, regularRate, overtimeRate) +
+    public String toString(){
+        return  String.format("| %-20s | %-20s | %-15.2f | %-15.2f |\n", departmentCode, departmentName, regularRate, overtimeRate) +
                 "+----------------------+----------------------+-----------------+------------------+";
     }
 
-    // Validate department code format
-    public static boolean isValidDepartmentCode(String departmentCode) {
-        // Define a regular expression pattern for the format "{int}001"
-        String regexPattern = "\\d+001";
-        // Check if the provided departmentCode matches the pattern
-        return Pattern.matches(regexPattern, departmentCode);
+    public static void printTableHeader() {
+        System.out.printf(
+                "+----------------------+----------------------+-----------------+------------------+%n" +
+                        "| %-20s | %-20s | %-15s | %-16s |%n" +
+                        "+----------------------+----------------------+-----------------+------------------+%n",
+                "Department Code", "Department Name", "Regular Rate", "Overtime Rate"
+        );
     }
 
-    // Check if a department code is unique in a specified file
-    public static boolean isDepartmentCodeUnique(String departmentCode, String fileName) {
-        return FileManager.isCodeUniqueInFile(departmentCode, fileName);
+    public static boolean isValidDepartmentCode(String departmentCode){
+
+        //Define a regular expression pattern
+        String regexPattern= "\\d+001";
+
+        //Check if the code matches the pattern
+        return Pattern.matches(regexPattern,departmentCode);
     }
 
+    public String serializeToString(){
+        return getDepartmentCode()+", "+getDepartmentName()+", "+getRegularRate()+", "+getOvertimeRate();
+    }
 
-    // Method to input data for a Department object
-    public static Department addDepartmentRecord() {
-        Scanner scanner = new Scanner(System.in);
+    public static Department addDepartmentRecord(){
+        Scanner scanner= new Scanner(System.in);
         Department department = new Department();
 
         boolean validCodeEntered = false;
-
         while (!validCodeEntered) {
-            System.out.println("Enter Department Code: ");
+            System.out.print("Enter the department code: ");
             String departmentCode = scanner.nextLine();
 
-            if (isValidDepartmentCode(departmentCode) && isDepartmentCodeUnique(departmentCode, "Department Rates.txt")) {
+            if(isValidDepartmentCode(departmentCode)&&!FileManager.searchFile("Department Rates.txt",departmentCode)){
                 department.setDepartmentCode(departmentCode);
-                validCodeEntered = true; // Exit the loop when a valid and unique code is entered
-            } else if (!isValidDepartmentCode(departmentCode)) {
-                System.out.println("Invalid department code format. Please enter a valid code.");
-            } else {
+                validCodeEntered = true;
+            }else if (!isValidDepartmentCode(departmentCode)){
+                System.out.println("Invalid department code format.Please enter a valid code.");
+            }else{
                 System.out.println("Department code already exists. Please enter a unique code.");
             }
         }
 
-        System.out.println("Enter Department Name: ");
-        department.setDepartmentName(scanner.nextLine());
+        System.out.print("Enter the department name: ");
+        String departmentName = scanner.nextLine();
+        department.setDepartmentName(departmentName);
 
-        System.out.println("Enter Regular Rate: ");
-        department.setRegularRate(scanner.nextDouble());
+        double regularRate = getValidNumericInput("Enter the Regular Rate: ");
+        department.setRegularRate(regularRate);
 
-        System.out.println("Enter Overtime Rate: ");
-        department.setOvertimeRate(scanner.nextDouble());
+        double overtimeRate = getValidNumericInput("Enter the Overtime Rate: ");
+        department.setOvertimeRate(overtimeRate);
 
-        // Close the Scanner to release resources
         scanner.close();
 
-        // Serialize the Department object to a string
-        String serializedData = department.serializeToString();
+        String serializedData=department.serializeToString();
 
-        // Write the serialized data to a file
         FileManager.writeToFile("Department Rates.txt", serializedData);
+
 
         return department;
     }
 
-    // Method to display department data
-    public void displayDepartmentRecord() {
-        System.out.println(this.toString());
-    }
+    private static double getValidNumericInput(String prompt) {
+        double value = 0.0;
+        boolean validInput = false;
 
-    // Serialize the Department object to a string
-    public String serializeToString() {
-        // Use a delimiter, such as tab, to separate attributes
-        return getDepartmentCode() + "\t" + getDepartmentName().replace("\n", "\t") + "\t" + getRegularRate() + "\t" + getOvertimeRate();
-    }
-
-    // Deserialize a string to create a Department object
-    public static Department deserializeFromString(String data) {
-        String[] parts = data.split("\t");
-        if (parts.length != 4) {
-            return null; // Invalid data
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (!validInput) {
+                try {
+                    System.out.print(prompt);
+                    value = Double.parseDouble(scanner.nextLine());
+                    validInput = true;
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid numeric value.");
+                }
+            }
         }
 
-        String departmentCode = parts[0];
-        String departmentName = parts[1].replace("\t", "\n");
-        double regularRate = Double.parseDouble(parts[2]);
-        double overtimeRate = Double.parseDouble(parts[3]);
-
-        return new Department(departmentCode, departmentName, regularRate, overtimeRate);
+        return value;
     }
 
-    public void updateDepartmentRecord() {
-        // Prompt the user to enter the departmentCode for the record they want to update
+    public Department updateDepartmentRecord() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the Department Code of the record you want to update: ");
-        String targetDepartmentCode = scanner.nextLine();
 
-        // Search for the department record in the file
-        String existingRecord = FileManager.findRecordByCode(targetDepartmentCode, "Department Rates.txt");
+        System.out.print("Enter the department code to update: ");
+        String departmentCodeToUpdate = scanner.nextLine();
 
-        if (existingRecord != null) {
-            // Update the department record
-            System.out.println("Enter the new Department Name: ");
+        if (isValidDepartmentCode(departmentCodeToUpdate) && FileManager.searchFile("Department Rates.txt", departmentCodeToUpdate)) {
+            // If the department code is valid and found, prompt the user for updated information
+            System.out.print("Enter the new department name: ");
             String newDepartmentName = scanner.nextLine();
-
-            System.out.println("Enter the new Regular Rate: ");
-            double newRegularRate = scanner.nextDouble();
-
-            System.out.println("Enter the new Overtime Rate: ");
-            double newOvertimeRate = scanner.nextDouble();
-
             setDepartmentName(newDepartmentName);
+
+            double newRegularRate = getValidNumericInput("Enter the new Regular Rate: ");
             setRegularRate(newRegularRate);
+
+            double newOvertimeRate = getValidNumericInput("Enter the new Overtime Rate: ");
             setOvertimeRate(newOvertimeRate);
 
-            // Serialize the updated department record
-            String updatedData = serializeToString();
+            // Update the record in the file
+            FileManager.updateDepartmentRecordInFile("Department Rates.txt", this);
+            System.out.println("Record updated successfully.");
 
-            // Use the updateRecord method from FileManager to update the record in the file
-            if (FileManager.updateRecord("Department Rates.txt", targetDepartmentCode, updatedData)) {
-                System.out.println("Record updated successfully.");
-            } else {
-                System.out.println("Error updating the record.");
-            }
+            scanner.close();
+            return this; // Return the updated Department object
         } else {
-            System.out.println("Department record not found with the specified code.");
+            if (!isValidDepartmentCode(departmentCodeToUpdate)) {
+                System.out.println("Invalid department code format. Please enter a valid code.");
+            } else {
+                System.out.println("Department code not found.");
+            }
+
+            scanner.close();
+            return null; // Return null if the update was unsuccessful
+        }
+    }
+
+    public static Department searchDepartmentByCode(String departmentCode) {
+        if (!isValidDepartmentCode(departmentCode)) {
+            System.out.println("Invalid department code format.");
+            return null;
         }
 
-        // Close the Scanner to release resources
-        scanner.close();
+        String filePath = "Department Rates.txt";
+        Department department = null;
+
+        try (Scanner fileScanner = new Scanner(new File(filePath))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                if (line.contains(departmentCode)) {
+                    department = deserializeDepartment(line);
+                    break; // Stop searching after finding the first match
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("File not found: " + filePath, e);
+        }
+
+        if (department != null) {
+            System.out.println("Department found. Deserializing and displaying information:");
+            displayDepartmentInfo(department);
+        } else {
+            System.out.println("Department not found for the given code.");
+        }
+
+        return department;
+    }
+
+    private static Department deserializeDepartment(String serializedData) {
+        String[] parts = serializedData.split(", ");
+        if (parts.length == 4) {
+            return new Department(parts[0], parts[1], Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
+        } else {
+            System.out.println("Error in deserialization. Invalid data format.");
+            return null;
+        }
+    }
+
+    private static void displayDepartmentInfo(Department department) {
+        System.out.println("Department Information:");
+        Department.printTableHeader();
+        System.out.println(department.toString());
     }
 
     public void viewDepartmentRecord() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter Department Code or Department Name: ");
-        String input = scanner.nextLine();
+        System.out.print("Enter the department code to view: ");
+        String departmentCode = scanner.nextLine();
+        Department foundDepartment = searchDepartmentByCode(departmentCode);
 
-        String data = FileManager.readFromFile("Department Rates.txt");
-
-        if (data != null) {
-            String[] records = data.split("\n");
-
-            if (isValidDepartmentCode(input)) {
-                // Input is a valid department code
-                String record = FileManager.findRecordByCode(input, "Department Rates.txt");
-                if (record != null) {
-                    Department department = deserializeFromString(record);
-                    if (department != null) {
-                        department.displayDepartmentRecord();
-                    } else {
-                        System.out.println("Error deserializing the department record.");
-                    }
-                } else {
-                    System.out.println("Department record not found with the specified code.");
-                }
-            } else {
-                // Input is not a valid department code, so assume it's a department name
-
-                boolean found = false;
-                for (int i = 0; i < records.length; i += 4) {
-                    if (records[i + 1].equalsIgnoreCase(input)) {
-                        Department department = deserializeFromString(records[i] + "\t" + records[i + 1] + "\t" + records[i + 2] + "\t" + records[i + 3]);
-                        if (department != null) {
-                            department.displayDepartmentRecord();
-                        } else {
-                            System.out.println("Error deserializing the department record.");
-                        }
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    System.out.println("Department record not found with the specified code or name.");
-                }
-            }
-        } else {
-            System.out.println("Error reading data from the file.");
-        }
-
-        // Close the Scanner to release resources
         scanner.close();
     }
 
-    // Add this method to the Department class
     public static void viewAllDepartmentRecords() {
-        String data = FileManager.readFromFile("Department Rates.txt");
+        String filePath = "Department Rates.txt";
 
-        if (data != null && !data.isEmpty()) {
-            String[] records = data.split("\n");
-            int recordCount = records.length / 4;
+        try (Scanner fileScanner = new Scanner(new File(filePath))) {
+            System.out.println("All Department Records:");
+            printTableHeader();
 
-            // Header row
-            System.out.println("+----------------------+----------------------+-----------------+------------------+");
-            System.out.println("| Department Code      | Department Name      | Regular Rate    | Overtime Rate    |");
-            System.out.println("+----------------------+----------------------+-----------------+------------------+");
-
-            for (int i = 0; i < recordCount; i++) {
-                int startIndex = i * 4;
-                String departmentCode = records[startIndex];
-                String departmentName = records[startIndex + 1].replace("\t", "\n");
-                double regularRate = Double.parseDouble(records[startIndex + 2]);
-                double overtimeRate = Double.parseDouble(records[startIndex + 3]);
-
-                // Print each record
-                System.out.printf("| %-20s | %-20s | %-15.2f | %-15.2f |\n", departmentCode, departmentName, regularRate, overtimeRate);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                Department department = deserializeDepartment(line);
+                if (department != null) {
+                    System.out.println(department.toString());
+                }
             }
-
-            // Footer row
-            System.out.println("+----------------------+----------------------+-----------------+------------------+");
-        } else {
-            System.out.println("No department records found.");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("File not found: " + filePath, e);
         }
     }
 }
