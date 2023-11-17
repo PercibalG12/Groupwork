@@ -1,104 +1,161 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.Arrays;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.ArrayList;
 
 public class FileManager {
+    private static final Logger logger = Logger.getLogger(FileManager.class.getName());
+
+    public static void fileStatus(String fileName) {
+        try {
+            File file = new File(fileName);
+            if (file.createNewFile()) {
+                logger.info("File created: " + file.getName());
+            } else {
+                logger.info("The file exists");
+            }
+
+            if (file.canRead()) {
+                logger.info("File is readable");
+            } else {
+                logger.info("File is not readable");
+            }
+
+            if (file.canWrite()) {
+                logger.info("File is writable");
+            } else {
+                logger.info("File is not writable");
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "An error occurred: " + e.getMessage(), e);
+        }
+    }
+
     public static void writeToFile(String fileName, String data) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(data);
             writer.newLine();
         } catch (IOException e) {
-            System.err.println("Error writing to the file: " + e.getMessage());
+            logger.log(Level.SEVERE, "Error writing to the file: " + e.getMessage(), e);
         }
     }
 
-    public static String readFromFile(String fileName) {
+    public static boolean doesRecordExist(String fileName, String searchString) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            StringBuilder fileContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                fileContent.append(line).append("\n");
+                if (line.contains(searchString)) {
+                    return true;
+                }
             }
-            return fileContent.toString();
         } catch (IOException e) {
-            System.err.println("Error reading from the file: " + e.getMessage());
+            logger.log(Level.SEVERE, "Error reading file: " + fileName, e);
+        }
+        return false;
+    }
+
+    public static String searchForRecord(String fileName, String searchString) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(searchString)) {
+                    return line;
+                }
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error reading file: " + fileName, e);
         }
         return null;
     }
 
-    public static boolean isCodeUniqueInFile(String code, String fileName) {
-        String data = readFromFile(fileName);
+    public static void updateRecord(String fileName, String searchString, String newData) {
+        try {
+            File inputFile = new File(fileName);
+            File tempFile = new File("tempFile.txt");
 
-        if (data == null) {
-            return true; // Handle the case where data is null (e.g., file read error).
-        }
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-        String[] records = data.split("\n");
+            String currentLine;
 
-        for (int i = 0; i < records.length; i += 4) {
-            String existingCode = records[i];
-            if (existingCode.equals(code)) {
-                return false; // Code already exists
+            while ((currentLine = reader.readLine()) != null) {
+                // Check if the current line contains the search string
+                if (currentLine.contains(searchString)) {
+                    // Replace the existing record with the new data
+                    writer.write(newData + System.getProperty("line.separator"));
+                } else {
+                    writer.write(currentLine + System.getProperty("line.separator"));
+                }
             }
-        }
 
-        return true; // Code is unique
+            writer.close();
+            reader.close();
+
+            // Delete the original file
+            if (inputFile.delete()) {
+                // Rename the temporary file to the original file name
+                if (!tempFile.renameTo(inputFile)) {
+                    logger.log(Level.SEVERE, "Error renaming the temporary file.");
+                }
+            } else {
+                logger.log(Level.SEVERE, "Error deleting the original file.");
+            }
+
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error updating record in file: " + fileName, e);
+        }
     }
 
-    public static String findRecordByCode(String code, String fileName) {
-        String data = readFromFile(fileName);
+    public static void deleteRecord(String fileName, String searchString) {
+        try {
+            File inputFile = new File(fileName);
+            File tempFile = new File("tempFile.txt");
 
-        if (data == null) {
-            return null; // Handle the case where data is null (e.g., file read error).
-        }
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-        String[] records = data.split("\n");
+            String currentLine;
 
-        for (int i = 0; i < records.length; i += 4) {
-            if (records[i].equals(code)) {
-                // Return the matching record
-                return String.join("\n", Arrays.copyOfRange(records, i, i + 4));
+            while ((currentLine = reader.readLine()) != null) {
+                // Check if the current line contains the search string
+                if (!currentLine.contains(searchString)) {
+                    writer.write(currentLine + System.getProperty("line.separator"));
+                }
             }
-        }
 
-        // Return null if record not found
-        return null;
+            writer.close();
+            reader.close();
+
+            // Delete the original file
+            if (inputFile.delete()) {
+                // Rename the temporary file to the original file name
+                if (!tempFile.renameTo(inputFile)) {
+                    logger.log(Level.SEVERE, "Error renaming the temporary file.");
+                }
+            } else {
+                logger.log(Level.SEVERE, "Error deleting the original file.");
+            }
+
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error deleting record from file: " + fileName, e);
+        }
     }
 
-    public static boolean updateRecord(String fileName, String targetCode, String updatedData) {
-        String data = readFromFile(fileName);
+    public static ArrayList<String> viewAllRecords(String fileName) {
+        ArrayList<String> records = new ArrayList<>();
 
-        if (data == null) {
-            return false; // Handle the case where data is null (e.g., file read error).
-        }
-
-        String[] records = data.split("\n");
-
-        boolean updated = false;
-
-        for (int i = 0; i < records.length; i += 4) {
-            if (records[i].equals(targetCode)) {
-                records[i] = updatedData;
-                updated = true;
-                break;
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                records.add(line);
             }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error reading file: " + fileName, e);
         }
 
-        if (updated) {
-            // Update the file with the updated records
-            String updatedFileData = String.join("\n", records);
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                writer.write(updatedFileData);
-            } catch (IOException e) {
-                System.err.println("Error updating the file: " + e.getMessage());
-                return false;
-            }
-            return true;
-        } else {
-            return false; // Record not found
-        }
+        return records;
     }
+
+
+
 }
