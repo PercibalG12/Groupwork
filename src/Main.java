@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
+        mainMenu();
 
     }
 
@@ -63,15 +64,13 @@ public class Main {
             case '1':
                 Department newDepartment = Department.addDepartmentRecord();
                 System.out.println("New Department Record:");
-                Department.printTableHeader();
-                System.out.println(newDepartment.toString());
+                Department.displayDepartmentInfo(newDepartment);
                 break;
             case '2':
-                Department updatedDepartment = updateDepartment();
+                Department updatedDepartment = Department.updateDepartmentRecord();
                 if (updatedDepartment != null) {
                     System.out.println("Updated Department Record:");
-                    Department.printTableHeader();
-                    System.out.println(updatedDepartment.toString());
+                    Department.displayDepartmentInfo(updatedDepartment);
                 }else {
                     System.out.println("Update unsuccessful. Department record not found or invalid format.");
                 }
@@ -81,8 +80,7 @@ public class Main {
                 singleRecord.viewDepartmentRecord();
                 break;
             case '4':
-                Department allRecords = new Department();
-                allRecords.viewAllDepartmentRecords();
+                Department.viewAllDepartmentRecords();
                 break;
             case '5':
                 mainMenu();
@@ -113,19 +111,28 @@ public class Main {
 
         switch (employeeOption) {
             case '1':
-                //Add Employee Record
+                Employee newEmployee = Employee.addEmployeeRecord();
+                System.out.println("New Employee Record:");
+                Employee.displayEmployeeInfo(newEmployee);
                 break;
             case '2':
-                //Update Employee Record
+                Employee updatedEmployee = Employee.updateEmployeeRecord();
+
+                if (updatedEmployee != null) {
+                    System.out.println("Updated Employee Record:");
+                    Employee.displayEmployeeInfo(updatedEmployee);
+                } else {
+                    System.out.println("Update unsuccessful. Employee record not found or invalid format.");
+                }
                 break;
             case '3':
-                //View a single record
+                Employee.viewEmployeeRecord();
                 break;
             case '4':
-                //View all records
+                Employee.viewAllEmployeeRecords();
                 break;
             case '5':
-                //Delete a record
+                Employee.deleteEmployeeRecord();
                 break;
             case '6':
                 mainMenu();
@@ -155,13 +162,20 @@ public class Main {
 
             switch (payrollOption) {
                 case '1':
-                    //Process Payroll
+                    // Process Payroll
+                    Payroll.processPayroll();
                     break;
                 case '2':
-                    //View Single Employee Payroll
+                    // View Single Employee Payroll
+                    System.out.println("Enter Employee ID:");
+                    String employeeId = scanner.nextLine();
+                    Payroll.viewPayroll(employeeId);
                     break;
                 case '3':
-                    //View Department Payroll
+                    // View Department Payroll
+                    System.out.println("Enter Department Code:");
+                    String departmentCode = scanner.nextLine();
+                    Payroll.viewDepartmentPayroll(departmentCode);
                     break;
                 case '4':
                     mainMenu();
@@ -178,10 +192,5 @@ public class Main {
         }
 
 
-    }
-
-    public static Department updateDepartment() {
-        Department department = new Department();
-        return department.updateDepartmentRecord();
     }
 }
