@@ -1,4 +1,5 @@
-import java.util.Scanner;
+package domain;
+import java.util.*;
 
 
 public class Main {
@@ -10,7 +11,7 @@ public class Main {
 
     public static void mainMenu(){
 
-        char option;
+        int option;
 
 
         System.out.println("Select from the menu below");
@@ -19,21 +20,21 @@ public class Main {
         System.out.println("3. Payroll Processing Management");
         System.out.println("4. Exit");
 
-        option = scanner.next().charAt(0);
+        option = scanner.nextInt();
         scanner.nextLine();
 
 
         switch (option) {
-            case '1':
+            case 1:
                 departmentMenu();
                 break;
-            case '2':
+            case 2:
                 employeeMenu();
                 break;
-            case '3':
+            case 3:
                 payrollMenu();
                 break;
-            case '4':
+            case 4:
                 System.out.println("Exiting the program.");
                 scanner.close();
                 System.exit(0);
@@ -47,7 +48,7 @@ public class Main {
 
     public static void departmentMenu(){
         char departmentOption;
-        FileManager.fileStatus("Department Rates.txt");
+        //FileManager.fileStatus("Department Rates.txt");
 
         System.out.println("Select an option:");
         System.out.println("1. Add");
@@ -65,12 +66,14 @@ public class Main {
                 Department newDepartment = Department.addDepartmentRecord();
                 System.out.println("New Department Record:");
                 Department.displayDepartmentInfo(newDepartment);
+                mainMenu();
                 break;
             case '2':
                 Department updatedDepartment = Department.updateDepartmentRecord();
                 if (updatedDepartment != null) {
                     System.out.println("Updated Department Record:");
                     Department.displayDepartmentInfo(updatedDepartment);
+                    mainMenu();
                 }else {
                     System.out.println("Update unsuccessful. Department record not found or invalid format.");
                 }
@@ -78,9 +81,11 @@ public class Main {
             case '3':
                 Department singleRecord = new Department();
                 singleRecord.viewDepartmentRecord();
+                mainMenu();
                 break;
             case '4':
                 Department.viewAllDepartmentRecords();
+                mainMenu();
                 break;
             case '5':
                 mainMenu();
@@ -94,7 +99,7 @@ public class Main {
 
     public static void employeeMenu(){
         char employeeOption;
-        FileManager.fileStatus("Employee Payroll.txt");
+        //FileManager.fileStatus("Employee Payroll.txt");
 
 
         System.out.println("Select an option:");
@@ -135,18 +140,18 @@ public class Main {
                 Employee.deleteEmployeeRecord();
                 break;
             case '6':
-                mainMenu();
                 break;
             default:
                 System.out.println("Invalid input");
                 scanner.nextLine();
                 break;
         }
+        mainMenu();
     }
 
     public static void payrollMenu() {
         char payrollOption;
-        FileManager.fileStatus("Processed Payroll.txt");
+        //FileManager.fileStatus("Processed Payroll.txt");
 
         while (true) {
             System.out.println("Select an option:");
@@ -188,7 +193,7 @@ public class Main {
                     scanner.nextLine();
                     break;
             }
-
+            mainMenu();
         }
 
 
