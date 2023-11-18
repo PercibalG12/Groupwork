@@ -14,10 +14,11 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.*;
-
+// FileManager class handles file operations such as reading, writing, updating and deleting records in a file
 public class FileManager {
+    // Logger to log information and errors
     private static final Logger logger = Logger.getLogger(FileManager.class.getName());
-
+    // Method to check the status of a file
     public static void fileStatus(String fileName) {
         try {
             File file = new File(fileName);
@@ -42,7 +43,7 @@ public class FileManager {
             logger.log(Level.SEVERE, "An error occurred: " + e.getMessage(), e);
         }
     }
-
+    // Method to write data to a file
     public static void writeToFile(String fileName, String data) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(data);
@@ -51,7 +52,7 @@ public class FileManager {
             logger.log(Level.SEVERE, "Error writing to the file: " + e.getMessage(), e);
         }
     }
-
+    // Method to check if a record exists in a file
     public static boolean doesRecordExist(String fileName, String searchString) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -65,7 +66,7 @@ public class FileManager {
         }
         return false;
     }
-
+    // Method to search for a record in a file
     public static String searchForRecord(String fileName, String searchString) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -79,7 +80,7 @@ public class FileManager {
         }
         return null;
     }
-
+    // Method to update a record in a file
     public static void updateRecord(String fileName, String searchString, String newData) {
         try {
             File inputFile = new File(fileName);
@@ -117,7 +118,7 @@ public class FileManager {
             logger.log(Level.SEVERE, "Error updating record in file: " + fileName, e);
         }
     }
-
+          // Method to delete a record from a file
     public static void deleteRecord(String fileName, String searchString) {
         try {
             File inputFile = new File(fileName);
@@ -152,7 +153,7 @@ public class FileManager {
             logger.log(Level.SEVERE, "Error deleting record from file: " + fileName, e);
         }
     }
-
+          // Method to view all records in a file
     public static ArrayList<String> viewAllRecords(String fileName) {
         ArrayList<String> records = new ArrayList<>();
 

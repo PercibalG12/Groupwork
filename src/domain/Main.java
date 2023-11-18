@@ -29,14 +29,18 @@ public class Main {
 
     public static void mainMenu(){
 
+        String red = "\033[0;31m";     // RED
+        String green = "\033[0;32m";   // GREEN
+        String reset = "\033[0m";      // Text Reset
+
         int option;
 
         //print statements  for the main menu
         System.out.println("Select from the menu below");
-        System.out.println("1. Department Record Management");
-        System.out.println("2. Employee Record Management");
-        System.out.println("3. Payroll Processing Management");
-        System.out.println("4. Exit");
+        System.out.println(green+"1. Department Record Management"+reset);
+        System.out.println(green+"2. Employee Record Management"+reset);
+        System.out.println(green+"3. Payroll Processing Management"+reset);
+        System.out.println(green+"4. Exit"+reset);
 
         option = scanner.nextInt();
         scanner.nextLine();
