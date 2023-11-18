@@ -1,3 +1,20 @@
+/*
+//
+Date: 10/16/2023
+Author: Percival Roberts & Joshuawn Johnson
+//
+This file pertains to Question 3. which states that the user should maintain the Department Rates data for each department via a menu
+with the options:
+i. Add: which allows the user to add new department rates record to the system.
+ii. Update: which allows the user to update an existing department record.
+iii. View: which allows the user to view a single department record.
+iv. View All: which allows the user to view all department records.
+
+//
+
+*/
+
+
 package domain;
 import javax.swing.*;
 import java.awt.*;

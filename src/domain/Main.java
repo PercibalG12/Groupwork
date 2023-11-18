@@ -1,7 +1,7 @@
 /*
 //
 Date: 10/16/2023
-Author:
+Author: Percival Roberts
 //
 The Main Class is designed to be the entry point to the program. From this class the user is able to view the main menu and from their select the following options
 
