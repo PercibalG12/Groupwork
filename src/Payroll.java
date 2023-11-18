@@ -1,15 +1,12 @@
+package domain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
-import java.util.Date;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Payroll extends Employee {
-
     private double regularPay;
     private double overtimePay;
     private double grossPay;
