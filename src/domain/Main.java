@@ -5,6 +5,9 @@ import java.util.*;
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
+        Main mainInstance = new Main();
+        GUI gui = new GUI(mainInstance);
+        gui.setVisible(true);
         mainMenu();
 
     }

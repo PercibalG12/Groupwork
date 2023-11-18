@@ -11,6 +11,12 @@ public class GUI extends JFrame {
 
     private Department department;
 
+    private Main main;
+
+    public GUI(Main main) {
+        this.main = main;
+
+    }
 
     public GUI() {
         setTitle("SSN Payroll Management System");
@@ -45,6 +51,8 @@ public class GUI extends JFrame {
         panel.add(employeeButton);
         panel.add(payrollButton);
         panel.add(exitButton);
+
+
 
         return panel;
     }
