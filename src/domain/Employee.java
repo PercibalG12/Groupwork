@@ -172,10 +172,12 @@ public class Employee {
 
     @Override
     public String toString() {
+        // Create a SimpleDateFormat object to format date fields
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        // Format date fields to strings
         String formattedDateOfBirth = dateFormat.format(dateOfBirth);
         String formattedDateOfHire = dateFormat.format(dateOfHire);
-
+        // Return a formatted string representing the employee details
         return "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+--------------------------------------------\n"+
                 "| Employee ID          | First Name           | Last Name            | Department Code      | Position            | TRN                 | NIS                  | Date of Birth        | Date of Hire        | Hours Worked (hrs)      |\n" +
                 "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-------------------------------------------\n" +
@@ -187,8 +189,9 @@ public class Employee {
 
     //Serialization
     public String serializeToString() {
+        // Create a SimpleDateFormat object to format date fields
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
+        // Serialize employee details into a tab-delimited string
         return getEmployeeID() + "\t" + getFirstName() + "\t" + getLastName() + "\t" +
                 getEmployeeDepartmentCode() + "\t" + getPosition() + "\t" +
                 getTaxRegistrationNumber() + "\t" + getNationalInsuranceScheme() + "\t" +
@@ -226,8 +229,10 @@ public class Employee {
     }
 
     public static void displayEmployeeInfo(Employee department) {
+        // Print a header for the department information table
         System.out.println("Department Information:");
-        Department.printTableHeader();
+        Department.printTableHeader(); //calls the print table header method
+        // Print the string representation of the employee
         System.out.println(department.toString());
     }
 
@@ -263,10 +268,14 @@ public class Employee {
 
     private Date parseDate(String dateString) {
         try {
+            // Create a SimpleDateFormat object with the specified date format
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            // Attempt to parse the dateString into a Date object
             return dateFormat.parse(dateString);
         } catch (ParseException e) {
+            // Handle a ParseException (error during date parsing)
             System.err.println("Error parsing date. Please use the format 'dd/mm/yyyy'.");
+            // Return null in case of an error
             return null;
         }
     }
@@ -299,24 +308,32 @@ public class Employee {
 
 
     private static double getValidNumericInput(String rates) {
+        // Initialize the value to 0.0
         double value = 0.0;
+        // Flag to control the input validation loop
         boolean validInput = false;
-
+        // Continue looping until valid input is obtained
         while (!validInput) {
             try {
+                // Prompt the user with the provided rates string
                 System.out.print(rates);
+                // Attempt to parse the user input into a double value
                 value = Double.parseDouble(scanner.nextLine());
+                // If parsing is successful, set validInput to true to exit the loop
                 validInput = true;
             } catch (NumberFormatException e) {
+                // Handle NumberFormatException (occurs if user enters a non-numeric value)
                 System.out.println("Invalid input. Please enter a valid numeric value.");
             }
         }
+        // Return the validated numeric value
         return value;
     }
 
     public static Employee addEmployeeRecord(){
+        // Create a new Employee object
         Employee employee = new Employee();
-
+        // Input and validation for employee ID
         boolean validEmployeeIDEntered = false;
         while (!validEmployeeIDEntered) {
             System.out.print("Enter the employee's ID (format: 97 followed by 3 digits): ");
@@ -329,18 +346,18 @@ public class Employee {
                 System.out.println("Invalid employeeID format. Please enter a valid employeeID.");
             }
         }
-
+        // Input for first name
         System.out.print("Enter the first name: ");
         String firstName = scanner.nextLine();
         employee.setFirstName(firstName);
-
+        // Input for last name
         System.out.print("Enter the last name: ");
         String lastName = scanner.nextLine();
         employee.setLastName(lastName);
-
+        // Input and validation for employee department code
         boolean validEmployeeDepartmentCode = false;
         while (!validEmployeeDepartmentCode) {
-            System.out.print("Enter the employee's department code: ");
+            System.out.print("Enter the employee's department code(digit + 001): ");
             String departmentCode = scanner.nextLine();
 
             if (FileManager.doesRecordExist("Department Rates.txt", departmentCode))
@@ -352,56 +369,59 @@ public class Employee {
             }
             System.out.println("Valid Employee Department Code: " + validEmployeeDepartmentCode);
         }
-
+        // Input for position
         System.out.print("Enter the position: ");
         String position = scanner.nextLine();
         employee.setPosition(position);
-
-        System.out.print("Enter the tax registration number (TRN): ");
+        // Input and validation for tax registration number (TRN)
+        System.out.print("Enter the tax registration number (TRN (9 digits)): ");
         String trn = scanner.nextLine();
         while (!isValidTRN(trn)) {
             System.out.println("Invalid TRN format. Please enter a valid TRN.");
-            System.out.print("Enter the tax registration number (TRN): ");
+            System.out.print("Enter the tax registration number (TRN (9 digits)): ");
             trn = scanner.nextLine();
         }
         employee.setTaxRegistrationNumber(trn);
-
-        System.out.print("Enter the national insurance scheme (NIS): ");
+        // Input and validation for national insurance scheme (NIS)
+        System.out.print("Enter the national insurance scheme (NIS(Capital letter +6 numbers)): ");
         String nis = scanner.nextLine();
         while (!isValidNIS(nis)) {
             System.out.println("Invalid NIS format. Please enter a valid NIS.");
-            System.out.print("Enter the national insurance scheme (NIS): ");
+            System.out.print("Enter the national insurance scheme (NIS(Capital letter +6 numbers): ");
             nis = scanner.nextLine();
         }
         employee.setNationalInsuranceScheme(nis);
-
+        // Input for date of birth
         Date dateOfBirth = getDateInput("Enter the date of birth (dd/MM/yyyy): ");
         employee.setDateOfBirth(dateOfBirth);
-
+        // Input for date of hire
         Date dateOfHire = getDateInput("Enter the date of hire (dd/MM/yyyy): ");
         employee.setDateOfHire(dateOfHire);
-
+        // Input and validation for hours worked
         double hrsWorked = getValidNumericInput("Enter the hours worked: ");
         employee.setHrsWorked(hrsWorked);
 
-
+        // Serialize the employee data to a string
         String serializedData = employee.serializeToString();
+        // Write the serialized data to a file
         FileManager.writeToFile("Employee Payroll.txt",serializedData);
-
+        // Return the created Employee object
         return employee;
     }
 
     public static Employee updateEmployeeRecord() {
+        // Create an Employee object to store the updated information
         Employee updatedEmployee = new Employee();
-
+        // Variable to store the employee ID to be updated
         String updateID = null;
-
+        // Input and validation for employee ID
         boolean validEmployeeIDEntered = false;
         while (!validEmployeeIDEntered) {
             System.out.print("Enter the employee ID: ");
             updateID = scanner.nextLine();
 
             if (isValidEmployeeID(updateID) && FileManager.doesRecordExist("Employee Payroll.txt", updateID)) {
+                // Set the employee ID in the updatedEmployee object
                 updatedEmployee.setEmployeeID(updateID);
                 validEmployeeIDEntered = true;
             } else if (!isValidEmployeeID(updateID)) {
@@ -410,13 +430,13 @@ public class Employee {
                 System.out.println("Employee ID doesn't exist. Please enter an existing ID.");
             }
         }
-
+        // Search for the existing record in the file
         String existingRecord = FileManager.searchForRecord("Employee Payroll.txt", updateID);
 
         if (existingRecord != null) {
-            // Use deserializeToString to populate updatedEmployee
+            // Deserialize the existing record to populate the updatedEmployee
             updatedEmployee = deserializeToString(existingRecord);
-
+            // Update employee information
             System.out.print("Enter the first name: ");
             String firstName = scanner.nextLine();
             assert updatedEmployee != null;
@@ -425,7 +445,7 @@ public class Employee {
             System.out.print("Enter the last name: ");
             String lastName = scanner.nextLine();
             updatedEmployee.setLastName(lastName);
-
+            // Input and validation for employee department code
             boolean validEmployeeDepartmentCode = false;
             while (!validEmployeeDepartmentCode) {
                 System.out.print("Enter the employee's department code: ");
@@ -439,42 +459,42 @@ public class Employee {
                 }
                 System.out.println("Valid Employee Department Code: " + validEmployeeDepartmentCode);
             }
-
+            // Input for position
             System.out.print("Enter the position: ");
             String position = scanner.nextLine();
             updatedEmployee.setPosition(position);
-
-            System.out.print("Enter the tax registration number (TRN): ");
+            // Input and validation for tax registration number (TRN)
+            System.out.print("Enter the tax registration number (TRN (9 digits)): ");
             String trn = scanner.nextLine();
             while (!isValidTRN(trn)) {
                 System.out.println("Invalid TRN format. Please enter a valid TRN.");
-                System.out.print("Enter the tax registration number (TRN): ");
+                System.out.print("Enter the tax registration number (TRN (9 digits)): ");
                 trn = scanner.nextLine();
             }
             updatedEmployee.setTaxRegistrationNumber(trn);
-
-            System.out.print("Enter the national insurance scheme (NIS): ");
+            // Input and validation for national insurance scheme (NIS)
+            System.out.print("Enter the national insurance scheme (NIS(Capital letter +6 numbers): ");
             String nis = scanner.nextLine();
             while (!isValidNIS(nis)) {
                 System.out.println("Invalid NIS format. Please enter a valid NIS.");
-                System.out.print("Enter the national insurance scheme (NIS): ");
+                System.out.print("Enter the national insurance scheme (NIS(Capital letter +6 numbers): ");
                 nis = scanner.nextLine();
             }
             updatedEmployee.setNationalInsuranceScheme(nis);
-
+            // Input for date of birth
             Date dateOfBirth = getDateInput("Enter the date of birth (dd/MM/yyyy): ");
             updatedEmployee.setDateOfBirth(dateOfBirth);
-
+            // Input for date of hire
             Date dateOfHire = getDateInput("Enter the date of hire (dd/MM/yyyy): ");
             updatedEmployee.setDateOfHire(dateOfHire);
-
+            // Input and validation for hours worked
             double hrsWorked = getValidNumericInput("Enter the hours worked: ");
             updatedEmployee.setHrsWorked(hrsWorked);
 
-
+            // Update the record in the file
             FileManager.updateRecord("Employee Payroll.txt", updateID, updatedEmployee.serializeToString());
             System.out.println("Record updated successfully.");
-
+            // Return the updated Employee object
             return updatedEmployee;
         } else {
             System.out.println("Record not found.");
@@ -483,24 +503,27 @@ public class Employee {
     }
 
     public static void viewEmployeeRecord() {
+        // Variable to store the serialized data of the found employee
         String search = null;
 
-
+        // Input and validation for employee ID
         boolean validEmployeeIDEntered = false;
         while (!validEmployeeIDEntered) {
             System.out.print("Enter the employee's ID (format: 97 followed by 3 digits): ");
             String employeeID = scanner.nextLine();
 
             if (isValidEmployeeID(employeeID)) {
+                // Search for the employee record in the file and get the serialized data
                 search = FileManager.searchForRecord("Employee Payroll.txt",employeeID);
                 validEmployeeIDEntered = true;
             } else {
                 System.out.println("Invalid employeeID format. Please enter a valid employeeID.");
             }
         }
-
+        // Deserialize the serialized data to an Employee object
         assert search != null;
         Employee singleRecord = deserializeToString(search);
+        // Display the information of the found employee
         assert singleRecord != null;
         displayEmployeeInfo(singleRecord);
 
@@ -526,21 +549,23 @@ public class Employee {
     }
 
     public static void deleteEmployeeRecord(){
+        // Create an Employee object to store the employee ID
         Employee deleteEmployeeRecord = new Employee();
-
+        // Input and validation for employee ID
         boolean validEmployeeIDEntered = false;
         while (!validEmployeeIDEntered) {
             System.out.print("Enter the employee's ID (format: 97 followed by 3 digits): ");
             String employeeID = scanner.nextLine();
 
             if (isValidEmployeeID(employeeID)) {
+                // Set the employee ID in the deleteEmployeeRecord object
                 deleteEmployeeRecord.setEmployeeID(employeeID);
                 validEmployeeIDEntered = true;
             } else {
                 System.out.println("Invalid employeeID format. Please enter a valid employeeID.");
             }
         }
-
+        // Use FileManager to delete the employee record
         FileManager.deleteRecord("Employee Payroll.txt",deleteEmployeeRecord.employeeID);
 
     }
