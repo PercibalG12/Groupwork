@@ -151,9 +151,12 @@ public class Employee {
         String formattedDateOfBirth = dateFormat.format(dateOfBirth);
         String formattedDateOfHire = dateFormat.format(dateOfHire);
 
-        return String.format("| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15.2f |\n",
-                employeeID, firstName, lastName, employeeDepartmentCode, position, taxRegistrationNumber,
-                nationalInsuranceScheme, formattedDateOfBirth, formattedDateOfHire, hrsWorked) +
+        return "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+--------------------------------------------\n"+
+                "| Employee ID          | First Name           | Last Name            | Department Code      | Position            | TRN                 | NIS                  | Date of Birth        | Date of Hire        | Hours Worked (hrs)      |\n" +
+                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-------------------------------------------\n" +
+                String.format("| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15.2f |\n",
+                        employeeID, firstName, lastName, employeeDepartmentCode, position, taxRegistrationNumber, nationalInsuranceScheme,
+                        dateFormat.format(dateOfBirth), dateFormat.format(dateOfHire), hrsWorked) +
                 "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+";
     }
 

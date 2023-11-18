@@ -48,7 +48,7 @@ public class Main {
 
     public static void departmentMenu(){
         char departmentOption;
-        //FileManager.fileStatus("Department Rates.txt");
+        FileManager.fileStatus("Department Rates.txt");
 
         System.out.println("Select an option:");
         System.out.println("1. Add");

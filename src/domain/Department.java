@@ -90,7 +90,13 @@ public class Department {
     //Attribute Validations
     public static boolean isValidDepartmentCode(String departmentCode){
 
-        //Define a regular expression pattern
+        /*Define a regular expression pattern
+          Regular Expression Explanation:
+        \\d+ : Match one or more digits (0-9).
+         001  : Match the literal characters "001" following the digits.
+         Combined, the regex pattern "\\d+001" matches a sequence of one or more digits
+         followed by the specific characters "001". It is useful for finding patterns
+         in strings where a numeric sequence is followed by the digits 001".*/
         String regexPattern= "\\d+001";
 
         //Check if the code matches the pattern
@@ -142,7 +148,7 @@ public class Department {
             System.out.print("Enter the department code: ");
             String departmentCode = scanner.nextLine();
 
-            if(isValidDepartmentCode(departmentCode)&&!FileManager.doesRecordExist("Department Rates.txt",departmentCode)){
+            if(isValidDepartmentCode(departmentCode)&&!domain.FileManager.doesRecordExist("Department Rates.txt",departmentCode)){
                 department.setDepartmentCode(departmentCode);
                 validCodeEntered = true;
             }else if (!isValidDepartmentCode(departmentCode)){
@@ -163,7 +169,7 @@ public class Department {
 
 
         String serializedData = department.serializeToString();
-        FileManager.writeToFile("Department Rates.txt",serializedData);
+        domain.FileManager.writeToFile("Department Rates.txt",serializedData);
 
         return department;
     }
@@ -179,7 +185,7 @@ public class Department {
             System.out.print("Enter the Department Code for the record to be updated: ");
             updateCode = scanner.nextLine();
 
-            if (isValidDepartmentCode(updateCode) && FileManager.doesRecordExist("Department Rates.txt", updateCode)) {
+            if (isValidDepartmentCode(updateCode) && domain.FileManager.doesRecordExist("Department Rates.txt", updateCode)) {
                 updatedDepartment.setDepartmentCode(updateCode);
                 validCodeEntered = true;
             } else if (!isValidDepartmentCode(updateCode)) {
@@ -189,7 +195,7 @@ public class Department {
             }
         }
 
-        String existingRecord = FileManager.searchForRecord("Department Rates.txt", updateCode);
+        String existingRecord = domain.FileManager.searchForRecord("Department Rates.txt", updateCode);
 
         if (existingRecord != null) {
             // Use deserializeToString to populate updatedDepartment
@@ -207,7 +213,7 @@ public class Department {
             double overtimeRate = getValidNumericInput("Enter the new Overtime Rate: ");
             updatedDepartment.setOvertimeRate(overtimeRate);
         
-            FileManager.updateRecord("Department Rates.txt", updateCode, updatedDepartment.serializeToString());
+            domain.FileManager.updateRecord("Department Rates.txt", updateCode, updatedDepartment.serializeToString());
             System.out.println("Record updated successfully.");
 
             return updatedDepartment;
@@ -225,8 +231,8 @@ public class Department {
             System.out.print("Enter the Department Code for the record to be updated: ");
             String departmentCode = scanner.nextLine();
 
-            if (isValidDepartmentCode(departmentCode) && FileManager.doesRecordExist("Department Rates.txt", departmentCode)) {
-                search = FileManager.searchForRecord("Department Rates.txt",departmentCode);
+            if (isValidDepartmentCode(departmentCode) && domain.FileManager.doesRecordExist("Department Rates.txt", departmentCode)) {
+                search = domain.FileManager.searchForRecord("Department Rates.txt",departmentCode);
                 validCodeEntered = true;
             } else if (!isValidDepartmentCode(departmentCode)) {
                 System.out.println("Invalid department code format. Please enter a valid code.");
@@ -248,7 +254,7 @@ public class Department {
         printTableHeader();
 
         // Use FileManager to get all records
-        ArrayList<String> records = FileManager.viewAllRecords("Department Rates.txt");
+        ArrayList<String> records = domain.FileManager.viewAllRecords("Department Rates.txt");
 
         // Check if records is not null
         if (!records.isEmpty()) {
