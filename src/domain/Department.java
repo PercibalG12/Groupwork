@@ -1,7 +1,7 @@
 /*
 //
 Date: 10/16/2023
-Author:
+Author: Jordayne Price  & Percival Roberts
 //
 This file pertains to Question 3. which states that the user should maintain the Department Rates data for each department via a menu
 with the options:
