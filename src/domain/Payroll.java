@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
-
+// Payroll class extends Employee and handles payroll processing
 public class Payroll extends Employee {
     private double regularPay;
     private double overtimePay;
@@ -109,7 +109,7 @@ public class Payroll extends Employee {
     public void setChequeNumber(String chequeNumber) {
         this.chequeNumber = chequeNumber;
     }
-
+    // Helper method to print table header
     public static void printTableHeader() {
         System.out.printf(
                 "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+\n" +
@@ -120,6 +120,7 @@ public class Payroll extends Employee {
                 "Regular Pay", "Overtime Pay", "Gross Pay", "Date of Processing", "Cheque Number"
         );
     }
+    // Method to convert Payroll object to string
     @Override
     public String toString() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -133,7 +134,7 @@ public class Payroll extends Employee {
                 getGrossPay(), formattedDateOfProcessing, getChequeNumber()) +
                 "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+";
     }
-
+    // Method to serialize Payroll object to a formatted string
     public String serializeToString() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -150,11 +151,11 @@ public class Payroll extends Employee {
                 dateFormatter.format(getDateOfProcessing()), getChequeNumber());
     }
 
-
+    // Method to deserialize a string to a Payroll object
     public static Payroll deserializeToString(String data) {
         // Deserialize string to a Payroll object
         String[] parts = data.split(","); // Change this line
-
+         // Check if the string contains at least 15 fields
         if (parts.length >= 15) { // Assuming at least 14 fields in the record
             Payroll payroll = new Payroll();
 
@@ -165,6 +166,7 @@ public class Payroll extends Employee {
             payroll.setEmployeeDepartmentCode(parts[4]);
             payroll.setTaxRegistrationNumber(parts[5]);
             payroll.setNationalInsuranceScheme(parts[6]);
+            // Use of exception handling to Parse date strings
             try {
                 payroll.setDateOfBirth(parseDate(parts[7]));
                 payroll.setDateOfHire(parseDate(parts[8]));
@@ -192,11 +194,11 @@ public class Payroll extends Employee {
     }
 
 
-
+   // Method to process payroll
     public static void processPayroll() {
         // Retrieve all employee records
         ArrayList<String> employeeRecords = FileManager.viewAllRecords("Employee Payroll.txt");
-
+       // Check if there are any employee records
         if (!employeeRecords.isEmpty()) {
             for (String record : employeeRecords) {
                 // Deserialize employee record
