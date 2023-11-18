@@ -1,11 +1,11 @@
+package domain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Employee {
+	public static Scanner scanner = new Scanner(System.in);
     private String employeeID;
     private String firstName;
     private String lastName;
@@ -240,7 +240,6 @@ public class Employee {
 
     // Helper method to get a valid date input
     private static Date getDateInput(String dateString) {
-        Scanner scanner = new Scanner(System.in);
         Date date = null;
         boolean validInput = false;
 
@@ -259,7 +258,6 @@ public class Employee {
     }
 
     private static double getValidNumericInput(String rates) {
-        Scanner scanner = new Scanner(System.in);
         double value = 0.0;
         boolean validInput = false;
 
@@ -277,7 +275,6 @@ public class Employee {
 
     public static Employee addEmployeeRecord(){
         Employee employee = new Employee();
-        Scanner scanner = new Scanner(System.in);
 
         boolean validEmployeeIDEntered = false;
         while (!validEmployeeIDEntered) {
@@ -305,7 +302,7 @@ public class Employee {
             System.out.print("Enter the employee's department code: ");
             String departmentCode = scanner.nextLine();
 
-            if (FileManager.doesRecordExist(departmentCode, "Department Rates.txt") && isValidDepartmentCode(departmentCode))
+            if (FileManager.doesRecordExist("Department Rates.txt", departmentCode))
             {
                 employee.setEmployeeDepartmentCode(departmentCode);
                 validEmployeeDepartmentCode = true;
@@ -346,7 +343,6 @@ public class Employee {
         double hrsWorked = getValidNumericInput("Enter the hours worked: ");
         employee.setHrsWorked(hrsWorked);
 
-        scanner.close();
 
         String serializedData = employee.serializeToString();
         FileManager.writeToFile("Employee Payroll.txt",serializedData);
@@ -356,7 +352,6 @@ public class Employee {
 
     public static Employee updateEmployeeRecord() {
         Employee updatedEmployee = new Employee();
-        Scanner scanner = new Scanner(System.in);
 
         String updateID = null;
 
@@ -448,7 +443,6 @@ public class Employee {
     }
 
     public static void viewEmployeeRecord() {
-        Scanner scanner = new Scanner(System.in);
         String search = null;
 
 
@@ -470,7 +464,6 @@ public class Employee {
         assert singleRecord != null;
         displayEmployeeInfo(singleRecord);
 
-        scanner.close();
     }
 
     public static void viewAllEmployeeRecords() {
@@ -495,7 +488,6 @@ public class Employee {
     public static void deleteEmployeeRecord(){
         Employee deleteEmployeeRecord = new Employee();
 
-        Scanner scanner = new Scanner(System.in);
         boolean validEmployeeIDEntered = false;
         while (!validEmployeeIDEntered) {
             System.out.print("Enter the employee's ID (format: 97 followed by 3 digits): ");
@@ -507,7 +499,6 @@ public class Employee {
             } else {
                 System.out.println("Invalid employeeID format. Please enter a valid employeeID.");
             }
-            scanner.close();
         }
 
         FileManager.deleteRecord("Employee Payroll.txt",deleteEmployeeRecord.employeeID);
