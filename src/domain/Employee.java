@@ -162,6 +162,7 @@ public class Employee {
 
     //Serialization
     public String serializeToString(){
+
         return getEmployeeID()+"\t"+getFirstName()+"\t"+getLastName()+"\t"+getEmployeeDepartmentCode()+"\t"+getPosition()+"\t"+getTaxRegistrationNumber()+"\t"+getNationalInsuranceScheme()+"\t"+getDateOfBirth()+"\t"+getDateOfHire()+"\t"+getHrsWorked();
     }
 
@@ -242,16 +243,22 @@ public class Employee {
 
 
     // Helper method to get a valid date input
-    private static Date getDateInput(String dateString) {
+    private static Date getDateInput(String prompt) {
         Date date = null;
         boolean validInput = false;
 
         while (!validInput) {
             try {
-                System.out.print(dateString);
+                System.out.print(prompt);
                 String dateStr = scanner.nextLine();
-                date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-                validInput = true;
+
+                // Validate the date format
+                if (dateStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid date format. Please enter a valid date (dd/MM/yyyy).");
+                }
             } catch (ParseException e) {
                 System.out.println("Invalid date format. Please enter a valid date (dd/MM/yyyy).");
             }
@@ -259,6 +266,7 @@ public class Employee {
 
         return date;
     }
+
 
     private static double getValidNumericInput(String rates) {
         double value = 0.0;
