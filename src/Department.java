@@ -1,8 +1,10 @@
-import java.util.Scanner;
+
+package domain;
+import java.util.*;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 
 public class Department {
+	public static Scanner scanner = new Scanner(System.in);
     private String departmentCode;
     private String departmentName;
     private double regularRate;
@@ -98,7 +100,6 @@ public class Department {
         double value = 0.0;
         boolean validInput = false;
 
-        try (Scanner scanner = new Scanner(System.in)) {
             while (!validInput) {
                 try {
                     System.out.print(rates);
@@ -107,8 +108,9 @@ public class Department {
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a valid numeric value.");
                 }
+                
             }
-        }
+     
 
         return value;
     }
@@ -132,7 +134,7 @@ public class Department {
     }
 
     public static Department addDepartmentRecord(){
-        Scanner scanner= new Scanner(System.in);
+ 
         Department department = new Department();
 
         boolean validCodeEntered = false;
@@ -156,11 +158,9 @@ public class Department {
 
         double regularRate = getValidNumericInput("Enter the Regular Rate: ");
         department.setRegularRate(regularRate);
-
         double overtimeRate = getValidNumericInput("Enter the Overtime Rate: ");
         department.setOvertimeRate(overtimeRate);
 
-        scanner.close();
 
         String serializedData = department.serializeToString();
         FileManager.writeToFile("Department Rates.txt",serializedData);
@@ -168,8 +168,7 @@ public class Department {
         return department;
     }
 
-    public static Department updateDepartmentRecord() {
-        Scanner scanner = new Scanner(System.in);
+    public static Department updateDepartmentRecord() {        
         Department updatedDepartment = new Department();
 
         // Declare updateCode outside the loop
@@ -207,8 +206,7 @@ public class Department {
 
             double overtimeRate = getValidNumericInput("Enter the new Overtime Rate: ");
             updatedDepartment.setOvertimeRate(overtimeRate);
-            scanner.close();
-
+        
             FileManager.updateRecord("Department Rates.txt", updateCode, updatedDepartment.serializeToString());
             System.out.println("Record updated successfully.");
 
@@ -220,7 +218,6 @@ public class Department {
     }
 
     public void viewDepartmentRecord() {
-        Scanner scanner = new Scanner(System.in);
         String search = null;
 
         boolean validCodeEntered = false;
@@ -243,7 +240,7 @@ public class Department {
         assert singleRecord != null;
         displayDepartmentInfo(singleRecord);
 
-        scanner.close();
+      
     }
 
     // Method to view all records in the Department class using FileManager's readAllLines method
