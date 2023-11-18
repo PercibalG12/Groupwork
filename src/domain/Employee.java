@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class Employee {
-	public static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
     private String employeeID;
     private String firstName;
     private String lastName;
@@ -117,7 +117,7 @@ public class Employee {
     }
 
     static Date setDateOfBirth(String dateString) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.parse(dateString);
     }
 
@@ -126,7 +126,7 @@ public class Employee {
     }
 
     static Date setDateOfHire(String dateString) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.parse(dateString);
     }
 
@@ -161,8 +161,14 @@ public class Employee {
     }
 
     //Serialization
-    public String serializeToString(){
-        return getEmployeeID()+"\t"+getFirstName()+"\t"+getLastName()+"\t"+getEmployeeDepartmentCode()+"\t"+getPosition()+"\t"+getTaxRegistrationNumber()+"\t"+getNationalInsuranceScheme()+"\t"+getDateOfBirth()+"\t"+getDateOfHire()+"\t"+getHrsWorked();
+    public String serializeToString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        return getEmployeeID() + "\t" + getFirstName() + "\t" + getLastName() + "\t" +
+                getEmployeeDepartmentCode() + "\t" + getPosition() + "\t" +
+                getTaxRegistrationNumber() + "\t" + getNationalInsuranceScheme() + "\t" +
+                dateFormat.format(getDateOfBirth()) + "\t" + dateFormat.format(getDateOfHire()) + "\t" +
+                getHrsWorked();
     }
 
     public static Employee deserializeToString(String record) {
@@ -242,16 +248,22 @@ public class Employee {
 
 
     // Helper method to get a valid date input
-    private static Date getDateInput(String dateString) {
+    private static Date getDateInput(String prompt) {
         Date date = null;
         boolean validInput = false;
 
         while (!validInput) {
             try {
-                System.out.print(dateString);
+                System.out.print(prompt);
                 String dateStr = scanner.nextLine();
-                date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-                validInput = true;
+
+                // Validate the date format
+                if (dateStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid date format. Please enter a valid date (dd/MM/yyyy).");
+                }
             } catch (ParseException e) {
                 System.out.println("Invalid date format. Please enter a valid date (dd/MM/yyyy).");
             }
@@ -259,6 +271,7 @@ public class Employee {
 
         return date;
     }
+
 
     private static double getValidNumericInput(String rates) {
         double value = 0.0;
@@ -433,7 +446,6 @@ public class Employee {
             double hrsWorked = getValidNumericInput("Enter the hours worked: ");
             updatedEmployee.setHrsWorked(hrsWorked);
 
-            scanner.close();
 
             FileManager.updateRecord("Employee Payroll.txt", updateID, updatedEmployee.serializeToString());
             System.out.println("Record updated successfully.");
