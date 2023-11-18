@@ -2,6 +2,7 @@ package domain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAccessor;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -119,11 +120,15 @@ public class Payroll extends Employee {
     public String serializeToString() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+        // Convert java.util.Date to java.time.LocalDate
+        LocalDate dateOfBirth = getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dateOfHire = getDateOfHire().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
         // Serialize Payroll object to a formatted string
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                 getEmployeeID(), getFirstName(), getLastName(), getPosition(),
                 getTaxRegistrationNumber(), getNationalInsuranceScheme(),
-                dateFormatter.format((TemporalAccessor) getDateOfBirth()), dateFormatter.format((TemporalAccessor) getDateOfHire()),
+                dateFormatter.format(dateOfBirth), dateFormatter.format(dateOfHire),
                 getHrsWorked(), getRegularPay(), getOvertimePay(), getGrossPay(),
                 dateFormatter.format(getDateOfProcessing()), getChequeNumber());
     }
