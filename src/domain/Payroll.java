@@ -1,11 +1,14 @@
 package domain;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAccessor;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Random;
 
 public class Payroll extends Employee {
     private double regularPay;
@@ -94,20 +97,19 @@ public class Payroll extends Employee {
     public static void printTableHeader() {
         System.out.printf(
                 "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+\n" +
-                        "| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15s |\n" +
+                        "| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s |%-20s||%-20s| |%-20s| |%-20s| |%-20s|  %-15s |\n" +
                         "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+\n",
-                "Employee ID", "No", "First Name", "Last Name", "Dept. Code", "Position", "Tax Registration", "NI Scheme",
+                "Employee ID", "First Name", "Last Name", "Dept. Code", "Position", "Tax Registration", "NIS Scheme",
                 "Date of Birth", "Date of Hire", "Hours Worked",
-                "Regular Pay", "Overtime Pay", "Gross Pay"
+                "Regular Pay", "Overtime Pay", "Gross Pay", "Date of Processing", "Cheque Number"
         );
     }
-
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDateOfBirth = dateFormat.format(getDateOfBirth());
-        String formattedDateOfHire = dateFormat.format(getDateOfHire());
-        String formattedDateOfProcessing = (dateOfProcessing != null) ? dateFormat.format(dateOfProcessing) : "";
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDateOfBirth = dateFormatter.format(getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        String formattedDateOfHire = dateFormatter.format(getDateOfHire().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        String formattedDateOfProcessing = (dateOfProcessing != null) ? dateFormatter.format(dateOfProcessing) : "";
 
         return String.format("| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15.2f | %-20s | %-20s | %-20s | %-20s |%n",
                 getEmployeeID(), getFirstName(), getLastName(), getPosition(), getTaxRegistrationNumber(),
@@ -115,7 +117,6 @@ public class Payroll extends Employee {
                 getGrossPay(), formattedDateOfProcessing, getChequeNumber()) +
                 "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+";
     }
-
 
     public String serializeToString() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -125,41 +126,42 @@ public class Payroll extends Employee {
         LocalDate dateOfHire = getDateOfHire().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         // Serialize Payroll object to a formatted string
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
-                getEmployeeID(), getFirstName(), getLastName(), getPosition(),
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                getEmployeeID(), getFirstName(), getLastName(), getEmployeeDepartmentCode(), getPosition(),
                 getTaxRegistrationNumber(), getNationalInsuranceScheme(),
                 dateFormatter.format(dateOfBirth), dateFormatter.format(dateOfHire),
                 getHrsWorked(), getRegularPay(), getOvertimePay(), getGrossPay(),
                 dateFormatter.format(getDateOfProcessing()), getChequeNumber());
     }
 
+
     public static Payroll deserializeToString(String data) {
         // Deserialize string to a Payroll object
-        String[] parts = data.split(",");
+        String[] parts = data.split(","); // Change this line
 
-        if (parts.length == 14) { // Assuming 14 fields in the record
+        if (parts.length >= 15) { // Assuming at least 14 fields in the record
             Payroll payroll = new Payroll();
 
             payroll.setEmployeeID(parts[0]);
             payroll.setFirstName(parts[1]);
             payroll.setLastName(parts[2]);
             payroll.setPosition(parts[3]);
-            payroll.setTaxRegistrationNumber(parts[4]);
-            payroll.setNationalInsuranceScheme(parts[5]);
+            payroll.setEmployeeDepartmentCode(parts[4]);
+            payroll.setTaxRegistrationNumber(parts[5]);
+            payroll.setNationalInsuranceScheme(parts[6]);
             try {
-                payroll.setDateOfBirth(parseDate(parts[6]));
-                payroll.setDateOfHire(parseDate(parts[7]));
+                payroll.setDateOfBirth(parseDate(parts[7]));
+                payroll.setDateOfHire(parseDate(parts[8]));
             } catch (ParseException e) {
                 System.out.println("Error parsing date: " + e.getMessage());
                 return null;
             }
-            payroll.setHrsWorked(Double.parseDouble(parts[8]));
-            payroll.setRegularPay(Double.parseDouble(parts[9]));
-            payroll.setOvertimePay(Double.parseDouble(parts[10]));
-            payroll.setGrossPay(Double.parseDouble(parts[11]));
-            payroll.setDateOfProcessing(LocalDate.parse(parts[12], DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            payroll.setChequeNumber(parts[13]);
-
+            payroll.setHrsWorked(Double.parseDouble(parts[9]));
+            payroll.setRegularPay(Double.parseDouble(parts[10]));
+            payroll.setOvertimePay(Double.parseDouble(parts[11]));
+            payroll.setGrossPay(Double.parseDouble(parts[12]));
+            payroll.setDateOfProcessing(LocalDate.parse(parts[13], DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            payroll.setChequeNumber(parts[14]);
             return payroll;
         } else {
             System.out.println("Invalid payroll record format: " + data);
@@ -298,6 +300,8 @@ public class Payroll extends Employee {
 
                 // Check if the department code matches
                 if (payroll != null && payroll.getEmployeeDepartmentCode().equals(departmentCode)) {
+                    // Debug statement
+                    System.out.println("Debug: Found matching record for department " + departmentCode);
                     // Display the payroll information
                     System.out.println(payroll);
                 }
@@ -306,6 +310,5 @@ public class Payroll extends Employee {
             System.out.println("No processed payroll records found.");
         }
     }
-
 
 }
