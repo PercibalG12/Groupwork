@@ -1,3 +1,14 @@
+/*
+//
+Date: 10/16/2023
+Author:
+//
+This file pertains to Question 7. TAll committed changes made during the execution of the program, should be stored
+and used to update the relevant files, when the application terminates.
+//
+
+*/
+
 package domain;
 import java.io.*;
 import java.util.logging.Level;

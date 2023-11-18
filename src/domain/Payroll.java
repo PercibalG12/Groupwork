@@ -1,3 +1,19 @@
+/*
+//
+Date: 10/16/2023
+Author:
+//
+This file pertains to Question 5 . The user shall process the Employee Payroll via a menu with the options:
+i. Process Payroll: Calculates payroll and generates Processed Payroll File.
+ii. View Payroll: Allows the user to view a single employee payroll record.
+iii. View Department Payroll:  Allows the user to view all employee payroll
+records for a specific department.
+
+//
+
+*/
+
+
 package domain;
 
 import java.text.ParseException;
