@@ -1,3 +1,20 @@
+/*
+//
+Date: 10/16/2023
+Author:
+//
+The Main Class is designed to be the entry point to the program. From this class the user is able to view the main menu and from their select the following options
+
+         1. Department Record Management
+         2. Employee Record Management
+         3. Payroll Processing Management
+         4. Exit
+//
+
+It also answers Question 6 . When the exit option is selected the application should close.
+*/
+
+//import packages
 package domain;
 import java.util.*;
 
@@ -5,6 +22,7 @@ import java.util.*;
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
+        //loops the main menu
         mainMenu();
 
     }
@@ -13,7 +31,7 @@ public class Main {
 
         int option;
 
-
+        //print statements  for the main menu
         System.out.println("Select from the menu below");
         System.out.println("1. Department Record Management");
         System.out.println("2. Employee Record Management");
@@ -23,7 +41,7 @@ public class Main {
         option = scanner.nextInt();
         scanner.nextLine();
 
-
+        // checks the option entered by user and executes the method
         switch (option) {
             case 1:
                 departmentMenu();
@@ -46,6 +64,7 @@ public class Main {
         }
     }
 
+    //department menu method
     public static void departmentMenu(){
         char departmentOption;
         FileManager.fileStatus("Department Rates.txt");
@@ -97,10 +116,9 @@ public class Main {
         }
     }
 
+    //employee menu method
     public static void employeeMenu(){
         char employeeOption;
-        //FileManager.fileStatus("Employee Payroll.txt");
-
 
         System.out.println("Select an option:");
         System.out.println("1. Add");
@@ -149,6 +167,7 @@ public class Main {
         mainMenu();
     }
 
+    //payroll menu method
     public static void payrollMenu() {
         char payrollOption;
         //FileManager.fileStatus("Processed Payroll.txt");

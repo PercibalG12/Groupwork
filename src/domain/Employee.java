@@ -1,3 +1,28 @@
+/*
+//
+Date: 10/16/2023
+Author:
+//
+This file pertains to Question 4 . The user should maintain the Employee data via a menu with the options:
+i. Add: which allows the user to add a new employee record to the system.
+ii. Update: which allows the user to update an existing employee record.
+iii. View: which allows the user to view a single employee record.
+iv. View All in Department: which allows the user to view all employee records
+for a specified department.
+v. Delete: which allows the user to delete an employee record.
+
+
+This class also answers questions 8
+The analysis of the current system also uncovered details related to the various
+records held in several files; all employees must provide their Taxpayer Registration
+Number, National Insurance Scheme number and date of birth. The company also
+records the date the employee was hired. Each processed payroll record should also
+show the current payroll date and a unique system generated cheque number.
+
+//
+
+*/
+
 package domain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
