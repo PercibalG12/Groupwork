@@ -1,7 +1,8 @@
+package domain;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.ArrayList;
+import java.util.*;
 
 public class FileManager {
     private static final Logger logger = Logger.getLogger(FileManager.class.getName());
