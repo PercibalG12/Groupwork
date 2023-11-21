@@ -1,1 +1,3 @@
 1001	Janitor	20.0	25.0
+2001	Maintainance	23.0	27.0
+3001	Room Service	12.5	15.5

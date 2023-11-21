@@ -111,14 +111,25 @@ public class Payroll extends Employee {
     }
     // Helper method to print table header
     public static void printTableHeader() {
-        System.out.printf(
-                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+\n" +
-                        "| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s |%-20s||%-20s| |%-20s| |%-20s| |%-20s|  %-15s |\n" +
-                        "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+\n",
-                "Employee ID", "First Name", "Last Name", "Dept. Code", "Position", "Tax Registration", "NIS Scheme",
-                "Date of Birth", "Date of Hire", "Hours Worked",
-                "Regular Pay", "Overtime Pay", "Gross Pay", "Date of Processing", "Cheque Number"
-        );
+        String format = "| %-20s ";
+        String separator = "+----------------------+";
+        String[] headers = {
+                "Employee ID", "First Name", "Last Name","Dept. Code", "Position",
+                "Tax Registration", "NIS Scheme", "Date of Birth", "Date of Hire",
+                "Hours Worked", "Regular Pay", "Overtime Pay", "Gross Pay",
+                "Date of Processing", "Cheque Number"
+        };
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(separator.repeat(headers.length)).append("+\n");
+
+        for (String header : headers) {
+            sb.append(String.format(format, header));
+        }
+
+        sb.append("|\n").append(separator.repeat(headers.length)).append("+\n");
+
+        System.out.println(sb.toString());
     }
     // Method to convert Payroll object to string
     @Override
@@ -128,11 +139,11 @@ public class Payroll extends Employee {
         String formattedDateOfHire = dateFormatter.format(getDateOfHire().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         String formattedDateOfProcessing = (dateOfProcessing != null) ? dateFormatter.format(dateOfProcessing) : "";
 
-        return String.format("| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15.2f | %-20s | %-20s | %-20s | %-20s |%n",
-                getEmployeeID(), getFirstName(), getLastName(), getPosition(), getTaxRegistrationNumber(),
+        return String.format("| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20.2f | %-20.2f | %-20.2f | %-20.2f | %-20s | %-20s |\n",
+                getEmployeeID(), getFirstName(), getLastName(), getEmployeeDepartmentCode(), getPosition(), getTaxRegistrationNumber(),
                 getNationalInsuranceScheme(), formattedDateOfBirth, formattedDateOfHire, getHrsWorked(), getRegularPay(), getOvertimePay(),
-                getGrossPay(), formattedDateOfProcessing, getChequeNumber()) +
-                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+";
+                getGrossPay(),formattedDateOfProcessing,getChequeNumber()) +
+                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+";
     }
     // Method to serialize Payroll object to a formatted string
     public String serializeToString() {
@@ -162,8 +173,8 @@ public class Payroll extends Employee {
             payroll.setEmployeeID(parts[0]);
             payroll.setFirstName(parts[1]);
             payroll.setLastName(parts[2]);
-            payroll.setPosition(parts[3]);
-            payroll.setEmployeeDepartmentCode(parts[4]);
+            payroll.setPosition(parts[4]);
+            payroll.setEmployeeDepartmentCode(parts[3]);
             payroll.setTaxRegistrationNumber(parts[5]);
             payroll.setNationalInsuranceScheme(parts[6]);
             // Use of exception handling to Parse date strings
@@ -295,7 +306,8 @@ public class Payroll extends Employee {
             Payroll payroll = Payroll.deserializeToString(payrollRecord);
 
             // Display the payroll information
-            System.out.println("Employee Payroll Record:");
+            System.out.println("Employee Payroll Record:\n");
+            printTableHeader();
             System.out.println(payroll);
         } else {
             System.out.println("Payroll record not found for employee with ID: " + employeeId);
@@ -304,28 +316,30 @@ public class Payroll extends Employee {
 
     // Method to view all employee payroll records for a specific department
     public static void viewDepartmentPayroll(String departmentCode) {
-        // Retrieve all processed payroll records
+        // Retrieve all payroll records
         ArrayList<String> payrollRecords = FileManager.viewAllRecords("Processed Payroll.txt");
 
+        // Check if there are any payroll records
         if (!payrollRecords.isEmpty()) {
-            // Display header
-            Payroll.printTableHeader();
-
-            // Iterate through payroll records
+            // Display the payroll information
+            System.out.println("Department Payroll Records:\n");
+            printTableHeader();
             for (String record : payrollRecords) {
-                // Deserialize the payroll record
+                // Deserialize payroll record
                 Payroll payroll = Payroll.deserializeToString(record);
 
-                // Check if the department code matches
-                if (payroll != null && payroll.getEmployeeDepartmentCode().equals(departmentCode)) {
-                    // Debug statement
-                    System.out.println("Debug: Found matching record for department " + departmentCode);
-                    // Display the payroll information
-                    System.out.println(payroll);
+                if (payroll != null) {
+                    // Check if the payroll record belongs to the specified department
+                    if (departmentCode.equals(payroll.getEmployeeDepartmentCode())) {
+                        System.out.println(payroll);
+                    }
+                } else {
+                    System.out.println("Error deserializing payroll record.");
                 }
             }
+
         } else {
-            System.out.println("No processed payroll records found.");
+            System.out.println("No payroll records found.");
         }
     }
 

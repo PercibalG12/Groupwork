@@ -530,7 +530,6 @@ public class Employee {
     }
 
     public static void viewAllEmployeeRecords() {
-        printTableHeader();
 
         // Use FileManager to get all records
         ArrayList<String> records = FileManager.viewAllRecords("Employee Payroll.txt");
