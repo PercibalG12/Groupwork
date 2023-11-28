@@ -56,16 +56,6 @@ public class Payroll extends Employee {
         this.chequeNumber = chequeNumber;
     }
 
-    // Copy Constructor
-    public Payroll(Payroll obj) {
-        super(obj);
-        this.regularPay = obj.regularPay;
-        this.overtimePay = obj.overtimePay;
-        this.grossPay = obj.grossPay;
-        this.dateOfProcessing = obj.dateOfProcessing;
-        this.chequeNumber = obj.chequeNumber;
-    }
-
     // Getters
 
     public double getRegularPay() {
@@ -117,7 +107,7 @@ public class Payroll extends Employee {
                 "Employee ID", "First Name", "Last Name","Dept. Code", "Position",
                 "Tax Registration", "NIS Scheme", "Date of Birth", "Date of Hire",
                 "Hours Worked", "Regular Pay", "Overtime Pay", "Gross Pay",
-                "Date of Processing", "Cheque Number"
+                "Date of Processing", "Cheque Number",
         };
 
         StringBuilder sb = new StringBuilder();
@@ -129,7 +119,7 @@ public class Payroll extends Employee {
 
         sb.append("|\n").append(separator.repeat(headers.length)).append("+\n");
 
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
     // Method to convert Payroll object to string
     @Override
@@ -143,7 +133,7 @@ public class Payroll extends Employee {
                 getEmployeeID(), getFirstName(), getLastName(), getEmployeeDepartmentCode(), getPosition(), getTaxRegistrationNumber(),
                 getNationalInsuranceScheme(), formattedDateOfBirth, formattedDateOfHire, getHrsWorked(), getRegularPay(), getOvertimePay(),
                 getGrossPay(),formattedDateOfProcessing,getChequeNumber()) +
-                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+";
+                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+-----------------+-----------------+-----------------+-----------------+----------------------+----------------------+----------------------+-----------------+\n";
     }
     // Method to serialize Payroll object to a formatted string
     public String serializeToString() {
@@ -167,7 +157,7 @@ public class Payroll extends Employee {
         // Deserialize string to a Payroll object
         String[] parts = data.split(","); // Change this line
          // Check if the string contains at least 15 fields
-        if (parts.length >= 15) { // Assuming at least 14 fields in the record
+        if (parts.length >= 15) {
             Payroll payroll = new Payroll();
 
             payroll.setEmployeeID(parts[0]);

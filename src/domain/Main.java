@@ -1,15 +1,13 @@
 /*
-//
+
 Date: 18/11/2023
 Author: Percival Roberts 2202974
-//
 The Main Class is designed to be the entry point to the program. From this class the user is able to view the main menu and from their select the following options
 
          1. Department Record Management
          2. Employee Record Management
          3. Payroll Processing Management
          4. Exit
-//
 
 It also answers Question 6 . When the exit option is selected the application should close.
 */
