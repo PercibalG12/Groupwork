@@ -24,9 +24,12 @@ show the current payroll date and a unique system generated cheque number.
 */
 
 package domain;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Employee {
@@ -162,9 +165,11 @@ public class Employee {
     //Header and Body
     public static void printTableHeader() {
         System.out.printf(
-                "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+\n" +
-                        "| %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15s |\n" +
-                        "+----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+\n",
+                """
+                        +----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+
+                        | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-15s |
+                        +----------------------+----------------------+----------------------+-----------------+-----------------+-----------------+----------------------+----------------------+-----------------+
+                        """,
                 "Employee ID", "First Name", "Last Name", "Department Code", "Position", "Tax Registration", "NI Scheme",
                 "Date of Birth", "Date of Hire", "Hours Worked"
         );
@@ -222,8 +227,7 @@ public class Employee {
             return new Employee(employeeID, firstName, lastName, employeeDepartmentCode, position,
                     taxRegistrationNumber, nationalInsuranceScheme, dateOfBirth, dateOfHire, hrsWorked);
         } catch (NumberFormatException | ParseException e) {
-            // Handle the exception, log it, or return null, depending on your requirements.
-            e.printStackTrace(); // For illustration purposes; consider using a logging framework.
+            e.printStackTrace();
             return null;
         }
     }

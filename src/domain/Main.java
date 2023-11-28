@@ -29,7 +29,6 @@ public class Main {
 
     public static void mainMenu(){
 
-        String red = "\033[0;31m";     // RED
         String green = "\033[0;32m";   // GREEN
         String reset = "\033[0m";      // Text Reset
 

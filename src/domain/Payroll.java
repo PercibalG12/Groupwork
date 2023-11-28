@@ -290,10 +290,9 @@ public class Payroll extends Employee {
         String chequeNumber = String.valueOf(randomChequeNumber);
 
         // Assuming date of processing is the current date
-        Payroll payroll = new Payroll(employee, regularPay, overtimePay, grossPay,
-                LocalDate.now(), chequeNumber);
 
-        return payroll;
+        return new Payroll(employee, regularPay, overtimePay, grossPay,
+                LocalDate.now(), chequeNumber);
     }
 
     // Method to view a single employee payroll record
